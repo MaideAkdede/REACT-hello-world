@@ -3,33 +3,55 @@ import ChildCounter from "./ChildCounter";
 
 export default class Counter extends Component {
     state = {
-        count:0
+        counters: [
+            { id: 1, value: 0 } ,
+            { id: 2, value: 0 } ,
+            { id: 3, value: 0 } ,
+            { id: 4, value: 0 } ,
+        ]
+    };
+    augmenter = counter => {
+
+        const counters = [...this.state.counters];
+
+        const index = counters.indexOf(counter);
+
+        counters[index] = {...counter };
+
+        counters[index].value++;
+
+        this.setState({ counters});
     };
 
-    augmenter = () => {
-        this.setState({count: this.state.count + 1});
-    }
-    diminuer = () => {
-        if (this.state.count <= 0 ){
-            this.state.count = 0;
+    diminuer = counter => {
+        const counters = [...this.state.counters];
+
+        const index = counters.indexOf(counter);
+
+        counters[index] = {...counter };
+
+        if(counters[index].value >= 0){
+            counters[index].value = 0
         } else {
-            this.setState({count: this.state.count - 1 });
+            counters[index].value--;
         }
-    }
+
+        this.setState({ counters});
+    };
 
     render() {
-        return (
+        return this.state.counters.map(counter => (
             <React.Fragment>
-                <h1>Compteur</h1>
                 <ChildCounter
-                    valeur={this.state.count}
+                    counter={counter}
+                    key={counter.id}
+                    value={counter.value}
                     aug={this.augmenter}
                     dim={this.diminuer}
                 >
                 </ChildCounter>
             </React.Fragment>
-
-        )
+        ));
     }
 
 }
